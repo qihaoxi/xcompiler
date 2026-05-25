@@ -1,4 +1,4 @@
-if (NOT XCOMPILER_BUILD_EXAMPLES)
+if (NOT ENABLE_EXAMPLES)
 	return()
 endif ()
 
@@ -20,6 +20,14 @@ add_xcompiler_example(xcompiler_skeleton_demo
 
 add_xcompiler_example(xcompiler_logging_demo
 		${XCOMPILER_PROJECT_ROOT}/examples/logging_demo.c
+)
+
+add_xcompiler_example(xcompiler_framework_snapshot_demo
+		${XCOMPILER_PROJECT_ROOT}/examples/framework_snapshot_demo.c
+)
+
+add_xcompiler_example(xcompiler_frontend_intro_demo
+		${XCOMPILER_PROJECT_ROOT}/examples/frontend_intro_demo.c
 )
 
 message(STATUS "xcompiler examples enabled")

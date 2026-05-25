@@ -1,0 +1,26 @@
+# xcompiler formatting style
+# Keep it close to the current C scaffold: 4-space logical indentation, tabs for indentation,
+# and conservative line wrapping.
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: ForIndentation
+ColumnLimit: 120
+BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortLoopsOnASingleLine: false
+IndentCaseLabels: true
+SortIncludes: false
+DerivePointerAlignment: false
+PointerAlignment: Left
+SpaceBeforeParens: ControlStatements
+SeparateDefinitionBlocks: Always
+
+# 启用关键的对齐功能，提升可读性
+AlignConsecutiveAssignments: true   # 等号对齐
+AlignConsecutiveDeclarations: true  # 声明对齐
+# 可选，控制大括号内换行
+Cpp11BracedListStyle: false
+
+AlignArrayOfStructures: Left   # 或 Right，控制字段对齐方式

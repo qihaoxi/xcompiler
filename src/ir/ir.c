@@ -1,35 +1,28 @@
 #include "xcompiler/ir/ir.h"
 
-void xcompiler_ir_module_init(xcompiler_ir_module_t *module, const char *name, const xcompiler_ast_t *ast)
-{
-	if (!module)
-	{
+void xc_ir_module_init(xc_ir_module_t* module, const char* name, const xc_ast_t* ast) {
+	if (!module) {
 		return;
 	}
 	module->name = name;
-	module->ast = ast;
+	module->ast  = ast;
 }
 
-void xcompiler_ir_module_reset(xcompiler_ir_module_t *module)
-{
-	if (!module)
-	{
+void xc_ir_module_reset(xc_ir_module_t* module) {
+	if (!module) {
 		return;
 	}
 	module->name = NULL;
-	module->ast = NULL;
+	module->ast  = NULL;
 }
 
-bool xcompiler_ir_module_is_ready(const xcompiler_ir_module_t *module)
-{
+bool xc_ir_module_is_ready(const xc_ir_module_t* module) {
 	return module && module->name != NULL && module->ast != NULL;
 }
 
-xcompiler_status_code_t xcompiler_ir_module_lower(const xcompiler_ir_module_t *module)
-{
-	if (!xcompiler_ir_module_is_ready(module))
-	{
-		return XCOMPILER_STATUS_INVALID_ARGUMENT;
+xc_status_code_t xc_ir_module_lower(const xc_ir_module_t* module) {
+	if (!xc_ir_module_is_ready(module)) {
+		return XC_STATUS_INVALID_ARGUMENT;
 	}
-	return XCOMPILER_STATUS_NOT_READY;
+	return XC_STATUS_NOT_READY;
 }

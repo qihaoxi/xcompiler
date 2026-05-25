@@ -20,7 +20,7 @@
 
 目标：实现一个可以处理简单源代码并输出 AST 或诊断信息的前端。
 
-当前仓库的第一步是先把工程骨架搭起来：目录、CMake、公共接口、模块边界和测试入口先就位，具体语言业务逻辑后续再逐步补充。
+当前仓库已经先把工程骨架搭起来，并补上了一个可运行的“纯前端”闭环：lexer → parser → AST → semantic 校验。后续再逐步把运行时、IR 和后端接到这个前端输出上。
 
 - 定义最小语言子集
 - 实现词法分析器
@@ -98,28 +98,47 @@
 当前仓库已经按纯 C 方式搭好以下层次：
 
 - `common`：状态码、诊断等通用基础
-- `common/xlog.h`：轻量日志系统（控制台/文件）
+- `common/log.h`：统一日志接口（对外首选，导出 `XC_LOG_*` / `xc_log_*`）
+- `src/common/xlog.h`：底层全功能日志实现；由 `log.c` 实例化共享状态，不再需要单独的 `xlog.c`
+- `src/common/diagnostic.h`：诊断收集与错误列表
+- `src/common/status.h`：内部状态码定义与转换
 - `platform`：平台识别与后端偏好选择
 - `api`：对外稳定入口
-- `frontend/common`：前端共享的源码视图与位置类型
-- `frontend/lexer`：词法层接口
-- `frontend/ast`：AST 结构接口
-- `frontend/parser`：语法层接口
-- `frontend/semantic`：语义分析上下文接口
-- `ir`：中间表示接口
+- `frontend/frontend.h`：前端模块总入口
+- `src/frontend/common/common.h`：前端共享的源码视图与位置类型
+- `src/frontend/ast/ast.h`：AST 结构接口
+- `src/frontend/lexer/lexer.h`：词法层接口
+- `src/frontend/parser/parser.h`：语法层接口
+- `src/frontend/semantic/semantic.h`：语义分析上下文接口
+- `ir`：中间表示接口（对外头仍保留在 `include/`）
 - `driver`：流水线编排入口
 
-这些模块目前以“骨架 + 占位实现”为主，不涉及具体语言业务逻辑。
+其中，真正对外发布时只导出模块级公共头文件：`api/compiler.h`、`common/log.h`、`frontend/frontend.h`、`ir/ir.h`；其余头文件都与各自源码放在 `src/` 下。
 
-## 非首阶段目标
+这些模块当前以“骨架 + 最小可运行前端”为主：
 
-以下内容可以作为后续增强项，而非当前第一阶段强制目标：
+- lexer 已可产出完整 token 流
+- parser 已可把简单源代码汇总成平面 AST
+- semantic 已可对 AST 做基本结构校验
+- IR 与后端仍保留为后续扩展边界
 
-- 自研完整链接器
-- 大规模优化器
-- 复杂语言特性一次性全部实现
-- 全平台工具链适配
+## 已补充的验证材料
 
+- 单元测试：`tests/api/test_framework_describe.c`，覆盖框架快照与描述输出的精确格式与边界行为
+- 单元测试：`tests/frontend/test_frontend_intro.c`，覆盖 lexer / parser / semantic / IR 的入门式串联流程
+- 示例程序：`examples/framework_snapshot_demo.c`，展示如何遍历模块与流水线阶段信息
+- 示例程序：`examples/frontend_intro_demo.c`，展示一个更完整的前端入门演示（token 流 + parser / semantic / IR 骨架）
+
+## 编译检查策略
+
+当前 CMake 默认启用较严格的检查风格，参考了 `raw-spofer-pel/polyglot-c` 的编译参数思路：
+
+- 默认开启更严格的警告集
+- 在支持的编译器上将警告视为错误
+- 保留 file/macro prefix map，保证 `__FILE__` 输出相对路径
+- 在 GNU/Clang 环境下尽量补齐栈保护相关选项
+
+---
 ## 项目原则
 
 - 先实现最小闭环，再逐步扩展

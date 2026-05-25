@@ -1,33 +1,45 @@
-#include "xcompiler/frontend/semantic.h"
+#include "semantic.h"
 
-void xcompiler_semantic_context_init(xcompiler_semantic_context_t *context, const xcompiler_ast_t *ast)
-{
-	if (!context)
-	{
+void xc_semantic_context_init(xc_semantic_context_t* context, const xc_ast_t* ast) {
+	if (!context) {
 		return;
 	}
 	context->ast = ast;
 }
 
-void xcompiler_semantic_context_reset(xcompiler_semantic_context_t *context)
-{
-	if (!context)
-	{
+void xc_semantic_context_reset(xc_semantic_context_t* context) {
+	if (!context) {
 		return;
 	}
 	context->ast = NULL;
 }
 
-bool xcompiler_semantic_context_is_ready(const xcompiler_semantic_context_t *context)
-{
+bool xc_semantic_context_is_ready(const xc_semantic_context_t* context) {
 	return context && context->ast != NULL;
 }
 
-xcompiler_status_code_t xcompiler_semantic_analyze(const xcompiler_semantic_context_t *context)
-{
-	if (!xcompiler_semantic_context_is_ready(context))
-	{
-		return XCOMPILER_STATUS_INVALID_ARGUMENT;
+xc_status_code_t xc_semantic_analyze(const xc_semantic_context_t* context) {
+	if (!xc_semantic_context_is_ready(context) || !context->ast->nodes || context->ast->node_count == 0) {
+		return XC_STATUS_INVALID_ARGUMENT;
 	}
-	return XCOMPILER_STATUS_NOT_READY;
+
+	if (context->ast->nodes[0].kind != XC_AST_PROGRAM) {
+		return XC_STATUS_INTERNAL_ERROR;
+	}
+
+	const size_t source_length = context->ast->nodes[0].range.length;
+	for (size_t i = 0; i < context->ast->node_count; ++i) {
+		const xc_ast_node_t* node = &context->ast->nodes[i];
+		if (!node->label) {
+			return XC_STATUS_INTERNAL_ERROR;
+		}
+		if (node->range.offset > source_length || node->range.length > source_length - node->range.offset) {
+			return XC_STATUS_INTERNAL_ERROR;
+		}
+		if (i > 0 && node->kind == XC_AST_PROGRAM) {
+			return XC_STATUS_INTERNAL_ERROR;
+		}
+	}
+
+	return XC_STATUS_OK;
 }

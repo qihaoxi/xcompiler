@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-const xcompiler_module_descriptor_t *xcompiler_build_default_modules(size_t *count);
+const xc_module_descriptor_t* xc_build_default_modules(size_t* count);
 
 #ifdef __cplusplus
 }
