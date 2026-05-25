@@ -3,19 +3,11 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "common/status.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-enum xc_status_code {
-	XC_STATUS_OK = 0,
-	XC_STATUS_INVALID_ARGUMENT,
-	XC_STATUS_NOT_READY,
-	XC_STATUS_UNSUPPORTED,
-	XC_STATUS_INTERNAL_ERROR,
-};
-
-typedef enum xc_status_code xc_status_code_t;
 
 typedef struct xc_source_range {
 	size_t offset;

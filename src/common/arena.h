@@ -7,9 +7,9 @@ extern "C" {
 #endif
 
 typedef struct xc_arena {
-    char*  memory;
-    size_t capacity;
-    size_t offset;
+	char*  memory;
+	size_t capacity;
+	size_t offset;
 } xc_arena_t;
 
 void  xc_arena_init(xc_arena_t* arena, size_t capacity);

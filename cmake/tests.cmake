@@ -17,6 +17,10 @@ add_xcompiler_test(test_compiler_facade
     ${XCOMPILER_PROJECT_ROOT}/tests/api/test_compiler_facade.c
 )
 
+add_xcompiler_test(test_compiler_config
+    ${XCOMPILER_PROJECT_ROOT}/tests/api/test_compiler_config.c
+)
+
 add_xcompiler_test(test_framework_describe
 	${XCOMPILER_PROJECT_ROOT}/tests/api/test_framework_describe.c
 )
